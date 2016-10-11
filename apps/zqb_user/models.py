@@ -3,9 +3,13 @@
 # version: 1.0
 # author: shawn
 
+from __future__ import unicode_literals
+
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
-from uuidfield import UUIDField
+from django_extensions.db.fields import UUIDField
+from django.utils import timezone
+from django.core.validators import URLValidator
 import datetime
 
 
@@ -44,13 +48,14 @@ class UserProfile(AbstractBaseUser,PermissionsMixin):
     username = models.CharField(verbose_name="用户名", max_length=30, unique=True)
     email = models.EmailField(verbose_name="邮件地址", unique=True, null=True, blank=True)
     mobile = models.CharField(max_length=11, blank=True, null=True, unique=True, verbose_name=u"手机号码")
-    date_joined = models.DateTimeField(verbose_name="创建日期", default=datetime.datetime.now())
+    date_joined = models.DateTimeField(verbose_name="创建日期", default=timezone.now)
     real_name = models.CharField(u'真实姓名', max_length=30, blank=True, null=True)
     # TODO: 暂定七牛云
-    # avatar_url = models.ImageField(upload_to="avatar/%Y/%m", default="avatar/default_big.png", max_length=200, blank=True, null=True, verbose_name=u"头像220x220")
+    avatar_url = models.TextField(validators=[URLValidator()])
     valid_email = models.BooleanField(verbose_name=u"是否验证邮箱", default=False)
 
     objects = UserProfileManager()
+    USERNAME_FIELD = 'username'
 
     def send_email_to_user(self, subject, message, from_email=None, **kwargs):
         """

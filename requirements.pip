@@ -1,4 +1,5 @@
-django==1.7.6
+django==1.10.2
 djangorestframework==3.4.7
 django-uuidfield==0.5.0
 qiniu==7.0.9.1
+django_extensions==1.7.4
