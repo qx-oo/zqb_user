@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'zqb_user',
 ]
 
@@ -132,3 +133,8 @@ QINIU_ACCESSKEY = "xB-MyTyybNIAE4BPFoKRHO8OOmTVtDWsW01c44LV"
 QINIU_SECRETKEY = "COIBrIsT5JYFh-yZchZtcsepFZB6RpaNnH-rzxuh"
 QINIU_BUCKET_NAME = "zqb-avatar"
 QINIU_IMAGE_URL = "http://oeu1xl5b5.bkt.clouddn.com"
+
+
+# Version control
+IOS_VERSION = ['1.0']
+ANDROID_VERSION = []
