@@ -1,0 +1,4 @@
+django==1.7.6
+djangorestframework==3.4.7
+django-uuidfield==0.5.0
+qiniu==7.0.9.1
