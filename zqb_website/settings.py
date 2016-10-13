@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Django settings for test1 project.
 
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'zqb_common',
     'zqb_user',
 ]
 
@@ -50,7 +52,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -145,3 +147,4 @@ REGEX_EMAIL = "[^\._-][\w\.-]*@(?:[A-Za-z0-9]+\.)+[A-Za-z]+$"    #Email正则表
 REGEX_MOBILE = "^1[3578]\d{9}$|^14[57]\d{8}$"   # 手机号正则表达式
 MAX_SEND_MOBILE_CODE_COUNT = 3 # 手机每天最大验证次数
 MAX_SEND_EMAIL_COUNT = 3 # 邮箱每天最大验证次数
+MAX_IP_SEND_COUNT = 50 # 同一ip最大发送次数

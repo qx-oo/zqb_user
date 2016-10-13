@@ -22,9 +22,6 @@ class SignupEmailForm(forms.Form):
                                "required":"账号密码不能为空",
                                "min_length":"请输入至少8位密码",
                                "max_length":"密码不能超过50位"})
-    captcha = CaptchaField(widget=CaptchaTextInput(
-        attrs={"class": "form-control form-control-captcha fl","placeholder": "请输入验证码"}),
-        error_messages = {"required":"请输入验证码","invalid":"验证码错误"})
 
     def clean_email(self):
         '''
@@ -40,7 +37,7 @@ class SignupEmailForm(forms.Form):
                 self.error_messages['invaild'],
                 code='invaild',
                 )
-            
+
         try:
             UserProfile._default_manager.get(email=email)
         except UserProfile.DoesNotExist:
@@ -64,19 +61,12 @@ class SignupMobileForm(forms.Form):
     }
     mobile = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control form-control-phone fl", "placeholder": "请输入手机号"}),
                              max_length=11, error_messages = {"required":"账号密码不能为空",})
-    mobile_code = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "请输入短信验证码"}),
-                                  error_messages = {
-                                      "required":"请输入手机验证码",})
     password = forms.CharField(widget=forms.PasswordInput(attrs={"class": "form-control", "placeholder": "请输入密码"}),
                                min_length=8, max_length=50,
                                error_messages = {
                                    "required":"账号密码不能为空",
                                    "min_length":"请输入至少8位密码",
                                    "max_length":"密码不能超过50位"})
-
-    # captcha_m = CaptchaField(required=False,widget=CaptchaTextInput(
-    #     attrs={"class": "form-control form-control-captcha fl","placeholder": "请输入验证码"}),
-    #                        error_messages = {"required":"请输入验证码","invalid":"验证码错误"})
 
     def clean_mobile(self):
         '''
@@ -100,34 +90,3 @@ class SignupMobileForm(forms.Form):
              self.error_messages['duplicate_mobile'],
              code='duplicate_mobile',
         )
-
-    def clean_mobile_code(self):
-        '''
-        验证手机验证码是否匹配和是否过期
-        '''
-        try:
-            mobile = self.cleaned_data["mobile"]
-            mobile_code = self.cleaned_data["mobile_code"]
-
-            record = MobileVerifyRecord.objects.filter(Q(mobile=mobile), Q(code=mobile_code),Q(type=0)).order_by("-created")
-            if record:
-                if datetime.now()-timedelta(minutes=30) > record[0].created:
-                    #手机验证码过期
-                    raise forms.ValidationError(
-                        self.error_messages['overdue_mobile_code'],
-                        code='overdue_mobile_code',
-                    )
-            else:
-                #手机验证码不匹配
-                raise forms.ValidationError(
-                    self.error_messages['nonmatch_mobile_code'],
-                    code='nonmatch_mobile_code',
-                )
-        except Exception,e:
-            #手机验证码不匹配
-            raise forms.ValidationError(
-                self.error_messages['nonmatch_mobile_code'],
-                code='nonmatch_mobile_code',
-                )
-
-        return mobile_code
