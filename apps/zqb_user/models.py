@@ -11,6 +11,7 @@ from django_extensions.db.fields import UUIDField
 from django.utils import timezone
 from django.core.validators import URLValidator
 import datetime
+from pytz import utc
 
 
 class UserProfileManager(BaseUserManager):
@@ -20,7 +21,7 @@ class UserProfileManager(BaseUserManager):
         """
         根据用户名和密码创建一个用户
         """
-        now = datetime.datetime.now()
+        now = datetime.datetime.utcnow().replace(tzinfo=utc)
         if not email:
             raise ValueError(u'Email必须填写')
         user = self.model(username=username,email=email,

@@ -114,7 +114,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+#TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
@@ -137,6 +138,10 @@ QINIU_BUCKET_NAME = "zqb-avatar"
 QINIU_IMAGE_URL = "http://oeu1xl5b5.bkt.clouddn.com"
 
 
+# default user avatar
+DEFAULT_USER_AVATAR_URL = ''
+
+
 # Version control
 IOS_VERSION = ['1.0'] # 控制能使用api的app版本
 ANDROID_VERSION = []
@@ -148,3 +153,4 @@ REGEX_MOBILE = "^1[3578]\d{9}$|^14[57]\d{8}$"   # 手机号正则表达式
 MAX_SEND_MOBILE_CODE_COUNT = 3 # 手机每天最大验证次数
 MAX_SEND_EMAIL_COUNT = 3 # 邮箱每天最大验证次数
 MAX_IP_SEND_COUNT = 50 # 同一ip最大发送次数
+MOBILE_CODE_TIME_OUT = 30 # 手机验证码超时时常
