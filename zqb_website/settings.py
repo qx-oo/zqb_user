@@ -136,5 +136,12 @@ QINIU_IMAGE_URL = "http://oeu1xl5b5.bkt.clouddn.com"
 
 
 # Version control
-IOS_VERSION = ['1.0']
+IOS_VERSION = ['1.0'] # 控制能使用api的app版本
 ANDROID_VERSION = []
+
+
+# check email and mobile
+REGEX_EMAIL = "[^\._-][\w\.-]*@(?:[A-Za-z0-9]+\.)+[A-Za-z]+$"    #Email正则表达式
+REGEX_MOBILE = "^1[3578]\d{9}$|^14[57]\d{8}$"   # 手机号正则表达式
+MAX_SEND_MOBILE_CODE_COUNT = 3 # 手机每天最大验证次数
+MAX_SEND_EMAIL_COUNT = 3 # 邮箱每天最大验证次数

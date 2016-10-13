@@ -67,6 +67,10 @@ class UserProfile(AbstractBaseUser,PermissionsMixin):
         pass
         # send_mail(subject, message, from_email, [self.email], **kwargs)
 
+    class Meta:
+        verbose_name = "UserInfo"
+        verbose_name_plural = verbose_name
+
 
 class DeviceToken(models.Model):
     '''
