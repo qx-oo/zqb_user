@@ -73,16 +73,18 @@ class UserProfile(AbstractBaseUser,PermissionsMixin):
         verbose_name_plural = verbose_name
 
 
-class DeviceToken(models.Model):
+class ThirdpartyOAuth(models.Model):
     '''
-    User Device Token
+    Thirdparty user oauth
     '''
-    device_id = models.CharField("设备ID", max_length=100, unique=True)
-    token = models.CharField(max_length=100, unique=True, verbose_name=u"设备Token")
-    user = models.ForeignKey(UserProfile, related_name=u"user", verbose_name=u"用户",null=True, blank=True)
+    token = models.CharField(u'令牌', max_length=200)
+    partner = models.CharField(u'第三方', max_length=10)
+    openid = models.CharField(u'openid', max_length=50)
+    user = models.ForeignKey(UserProfile, related_name=u"user", verbose_name=u"用户", null=True, blank=True)
+    date_joined = models.DateTimeField(verbose_name="创建日期", default=timezone.now)
 
     class Meta:
-        verbose_name = "DeviceToken"
+        verbose_name = "第三方用户绑定"
         verbose_name_plural = verbose_name
-        unique_together = (("device_id", "token"),)
+        unique_together = (('partner', 'openid'),)
         ordering = ['user']

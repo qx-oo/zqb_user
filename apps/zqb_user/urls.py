@@ -9,5 +9,7 @@ urlpatterns = [
     url(r'^email-signup/', views.user_sign_up_email),
     url(r'^mobile-signup/', views.user_sign_up_mobile),
     url(r'^mobile-sendcode/', views.user_send_mobile_code),
-    url(r'^api-token-auth/', authtoken_views.obtain_auth_token),
+    url(r'^signin/', views.user_sign_in),
+    # url(r'^api-token-auth/', authtoken_views.obtain_auth_token),
+    # url(r'^test/', views.test),
 ]

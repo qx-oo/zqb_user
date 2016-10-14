@@ -131,6 +131,15 @@ STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = "zqb_user.UserProfile"
 
+REST_FRAMEWORK = {
+   'DEFAULT_AUTHENTICATION_CLASSES': (
+       'rest_framework.authentication.TokenAuthentication',
+   ),
+   'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAdminUser'
+   ),
+}
+
 # QiNiu
 QINIU_ACCESSKEY = "xB-MyTyybNIAE4BPFoKRHO8OOmTVtDWsW01c44LV"
 QINIU_SECRETKEY = "COIBrIsT5JYFh-yZchZtcsepFZB6RpaNnH-rzxuh"
