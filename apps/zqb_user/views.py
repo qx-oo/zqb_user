@@ -7,9 +7,11 @@ from django.http import HttpResponse
 from zqb_user.forms import SignupEmailForm, SignupMobileForm
 import json
 from zqb_common.decorators import json_data
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.decorators import api_view, authentication_classes, permission_classes, parser_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.parsers import FileUploadParser
+import base64
 
 # Create your views here.
 
@@ -20,6 +22,9 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 def user_sign_in(request):
     '''
     User sign in.
+
+    mobile: 手机号
+    password: 密码
     '''
     if request.POST.get('mobile', None) and request.POST.get('password', None):
         status, token_or_info = UserService().user_signin(mobile=request.POST.get('mobile'),
@@ -43,7 +48,7 @@ def user_send_mobile_code(request):
     if signup_form.is_valid():
         mobile = signup_form.cleaned_data["mobile"]
         # send mobile code
-        status, msg = SendMobileCode().send_mobile_code(mobile, request.META.get('HTTP_X_REAL_IP') or request.META['REMOTE_ADDR'])
+        status, msg = SendMobileCode().send_mobile_code(mobile, request.META.get('HTTP_X_REAL_IP') or request.META.get('REMOTE_ADDR'))
         if status:
             return {'status': True}
         else:
@@ -82,8 +87,57 @@ def user_sign_up_email(request):
     pass
 
 
+@api_view(['POST'])
+@permission_classes((IsAuthenticated,))
+@json_data
 def upload_user_image(request):
     '''
     Upload user image
+
+    image_stream: 用户二进制流，需要base64编码
+    image_type: 上传图片格式
     '''
+    file_stream = request.POST.get("image_stream", None)
+    try:
+        file_stream = base64.b64decode(file_stream)
+    except TypeError:
+        return {'status': False, 'error': '类型错误'}
+    file_type = request.POST.get("image_type", '.png')
+    user = request.user
+    if file_stream and user:
+        UserService().upload_user_image(user, file_stream, file_type)
+    return {'status': False, 'error': '404'}
+
+
+@api_view(['GET'])
+@permission_classes((AllowAny,))
+@json_data
+def is_exist_user_info(request, info_type, info_value):
+    '''
+    判断属性是否存在
+
+    info_type: 判断属性
+    info_value: 判断属性值
+    '''
+    info_list = ['mobile', 'username']
+    if info_type in info_list:
+        status = UserService().exist_for_user_info(info_type, info_value)
+        if status:
+            return {'status': True, 'is_exist': True}
+        else:
+            return {'status': True, 'is_exist': False}
+    return {'status': False, 'error': '404'}
+
+
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+@json_data
+def get_user_info(self):
+    pass
+
+
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+@json_data
+def update_user_info(self):
     pass

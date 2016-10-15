@@ -163,3 +163,9 @@ MAX_SEND_MOBILE_CODE_COUNT = 3 # 手机每天最大验证次数
 MAX_SEND_EMAIL_COUNT = 3 # 邮箱每天最大验证次数
 MAX_IP_SEND_COUNT = 50 # 同一ip最大发送次数
 MOBILE_CODE_TIME_OUT = 30 # 手机验证码超时时常
+
+# send mobile code ,  leancloud
+LEANCLOUD_REQUESTSMSCODE = "https://api.leancloud.cn/1.1/requestSmsCode"
+LEANCLOUD_VERIFYSMSCODE = "https://api.leancloud.cn/1.1/verifySmsCode"
+LEANCLOUD_APP_ID = "nfIkUh9URKD5v7EuA3gkn4KM-gzGzoHsz"
+LEANCLOUD_APP_KEY = "aLQvOmdY8K2B67fAMDPiz5DU"

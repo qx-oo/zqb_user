@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from zqb_common.models import VerifyMobileCode, VerifyEmailUrl
+from zqb_common.functions import SaveImage
 import logging
 import string
 from random import choice
@@ -12,6 +13,8 @@ from django.contrib.auth import authenticate
 import datetime
 from pytz import utc
 from rest_framework.authtoken.models import Token
+import requests
+import json
 
 logger = logging.getLogger('zqb_user.functions')
 
@@ -46,19 +49,43 @@ class SendMobileCode():
     def _generator_code(self, length=6):
         return generate_random(length, 0)
 
-    def _send_mobile_code(self, mobile, code):
+    def _send_mobile_code(self, mobile):
         # TODO:
-        pass
+        data = {
+            "mobilePhoneNumber": mobile,
+            "ttl" : 30,
+            # "name": ""
+        }
+        headers = {
+            'x-lc-id': "nfIkUh9URKD5v7EuA3gkn4KM-gzGzoHsz",
+            'x-lc-key': "aLQvOmdY8K2B67fAMDPiz5DU",
+            'content-type': "application/json",
+        }
+        result = requests.request("POST", settings.LEANCLOUD_REQUESTSMSCODE, data=json.dumps(data), headers=headers)
+        if result.status_code == 200:
+            return ""
+        return json.loads(result.text).get('error', "")
+
+    def _verify_mobile_code(self, mobile, code):
+        headers = {
+            'x-lc-id': "nfIkUh9URKD5v7EuA3gkn4KM-gzGzoHsz",
+            'x-lc-key': "aLQvOmdY8K2B67fAMDPiz5DU",
+            'content-type': "application/json",
+        }
+        url = settings.LEANCLOUD_VERIFYSMSCODE + "/%s?mobilePhoneNumber=%s" % (code, mobile)
+        result = requests.request("POST", url, headers=headers)
+        if result.status_code == 200:
+            return ""
+        return json.loads(result.text).get('error', "")
 
     def verify_mobile_code(self, mobile, code, category=0):
         '''
         手机验证码验证
         '''
         try:
-            record_list = VerifyMobileCode.objects.filter(Q(mobile=mobile), Q(code=code),Q(category=category)).order_by("-created")
-            if record_list:
-                if (datetime.datetime.utcnow().replace(tzinfo=utc) - datetime.timedelta(minutes=settings.MOBILE_CODE_TIME_OUT)) > record_list[0].created:
-                    return False
+            result = self._verify_mobile_code(mobile, code)
+            if not result:
+                return True
             else:
                 return False
         except Exception, e:
@@ -76,18 +103,18 @@ class SendMobileCode():
             if (datetime.datetime.utcnow().replace(tzinfo=utc) - datetime.timedelta(minutes=1)) < record_list[0].created:
                 return False, '发送太频繁'
 
-        code = self._generator_code()
-        self._send_mobile_code(mobile, code)
-
-        record = VerifyMobileCode()
-        record.mobile = mobile
-        record.ip = ip
-        record.category = category
-        record.code = code
-        record.save()
-
         try:
-            result = self._send_mobile_code(record.mobile, record.code)
+            result = self._send_mobile_code(mobile)
+            if result:
+                return False, result
+
+            record = VerifyMobileCode()
+            record.mobile = mobile
+            record.ip = ip
+            record.category = category
+            record.code = 'leancloud'
+            record.save()
+
             return True, result
         except Exception, e:
             logger.error(e)
@@ -155,6 +182,33 @@ class UserService():
     def __init__(self):
         pass
 
+    def upload_user_image(self, user, image_stream, file_type):
+        '''
+        上传用户图像
+
+        user: 用户对象
+        image_stream: 头像流
+        '''
+        avatar_url = SaveImage(image_stream, file_type=file_type).get_image_url()
+        if avatar_url:
+            user.avatar_url = avatar_url
+            user.save()
+            return True
+        return False
+
+    def exist_for_user_info(self, info_type, value):
+        '''
+        判断用户属性是否存在
+
+        info_type: 需要判断字段
+        value: 属性值
+        '''
+        query = {info_type: value}
+        user_list = UserProfile.objects.filter(**query)
+        if user_list:
+            return True
+        return False
+
     def user_signup(self, username, password, email="", mobile=""):
         '''
         Register User
@@ -182,7 +236,7 @@ class UserService():
         def get_token(user):
             '''get or create user token'''
             usertoken = Token.objects.get_or_create(user=auth_user)
-            return True, usertoken.key
+            return True, usertoken[0].key
 
         # Mobile sign in.
         if mobile and password:
