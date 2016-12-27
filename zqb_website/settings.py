@@ -141,9 +141,9 @@ REST_FRAMEWORK = {
 }
 
 # QiNiu
-QINIU_ACCESSKEY = "xB-MyTyybNIAE4BPFoKRHO8OOmTVtDWsW01c44LV"
-QINIU_SECRETKEY = "COIBrIsT5JYFh-yZchZtcsepFZB6RpaNnH-rzxuh"
-QINIU_BUCKET_NAME = "zqb-avatar"
+QINIU_ACCESSKEY = ""
+QINIU_SECRETKEY = ""
+QINIU_BUCKET_NAME = ""
 QINIU_IMAGE_URL = "http://oeu1xl5b5.bkt.clouddn.com"
 
 
@@ -167,5 +167,5 @@ MOBILE_CODE_TIME_OUT = 30 # 手机验证码超时时常
 # send mobile code ,  leancloud
 LEANCLOUD_REQUESTSMSCODE = "https://api.leancloud.cn/1.1/requestSmsCode"
 LEANCLOUD_VERIFYSMSCODE = "https://api.leancloud.cn/1.1/verifySmsCode"
-LEANCLOUD_APP_ID = "nfIkUh9URKD5v7EuA3gkn4KM-gzGzoHsz"
-LEANCLOUD_APP_KEY = "aLQvOmdY8K2B67fAMDPiz5DU"
+LEANCLOUD_APP_ID = ""
+LEANCLOUD_APP_KEY = ""
